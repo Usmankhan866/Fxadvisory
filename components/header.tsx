@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react"
-import { supabase } from "@/lib/supabaseClient"
-import { User } from "@supabase/supabase-js" // Import Supabase User type
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { User } from "@supabase/supabase-js"
 
 /**
  * Define a custom type for the user state for better type safety.
@@ -20,6 +20,7 @@ export default function Header() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [goToDashboard, setGoToDashboard] = useState(false)
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   // --- Utility Functions ---
 
@@ -50,15 +51,17 @@ export default function Header() {
     }
 
     loadUser()
-
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       const currentUser = session?.user ?? null
       setUser(currentUser)
       setIsAdmin(checkAdminStatus(currentUser))
     })
 
-    return () => listener.subscription.unsubscribe()
-  }, [checkAdminStatus])
+    // Defensive periodic re-check (handles reload edge cases)
+    const interval = setInterval(loadUser, 30000)
+
+    return () => { listener.subscription.unsubscribe(); clearInterval(interval); }
+  }, [checkAdminStatus, supabase])
 
   // 3. Redirect handler
   useEffect(() => {
@@ -78,7 +81,6 @@ export default function Header() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    router.refresh() // Force UI update
     router.push("/")
   }
 

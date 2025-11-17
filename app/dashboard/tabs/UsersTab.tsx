@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Download, Filter, Users } from 'lucide-react';
-import { UserData } from "../types";
+import { UserData } from "../AdminDashboard/types";
 
 interface UsersTabProps {
   users: UserData[];
@@ -101,10 +101,10 @@ export default function UsersTab({ users }: UsersTabProps) {
                       </span>
                     </td>
                     <td className="py-4 px-4 text-gray-600 text-sm">
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {new Date(user.created_at).toISOString().slice(0,10)}
                     </td>
                     <td className="py-4 px-4 text-gray-600 text-sm">
-                      {new Date(user.last_sign_in).toLocaleDateString()}
+                      {new Date(user.last_sign_in).toISOString().slice(0,10)}
                     </td>
                   </tr>
                 ))

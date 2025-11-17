@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { User } from "@supabase/supabase-js";
 
 // Import types
@@ -12,8 +12,10 @@ import { DashboardSection, Topic, Meeting, ContentItem } from "./types";
 import UserSidebar from "./Sidebar";
 import UserHeader from "./Header";
 import OverviewSection from "./sections/OverviewSection";
+import MeetingRequest from "./components/MeetingRequest";
 
 export default function UserDashboard() {
+  const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<DashboardSection>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,6 +29,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     fetchUserData();
+    fetchMeetings();
   }, []);
 
   const fetchUserData = async () => {
@@ -97,6 +100,23 @@ export default function UserDashboard() {
       console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMeetings = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/meetings', { credentials: 'include', headers });
+      const data = await res.json();
+      if (res.ok) {
+        setMeetings(data.meetings || []);
+      }
+    } catch (e) {
+      console.error('Failed to load meetings', e);
     }
   };
 
@@ -175,9 +195,30 @@ export default function UserDashboard() {
             )}
 
             {activeSection === "meetings" && (
-              <div className="text-center py-12">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Meetings Section</h3>
-                <p className="text-gray-500">Meeting management coming soon...</p>
+              <div className="py-6 space-y-6">
+                <h3 className="text-xl font-bold text-gray-900">Meetings</h3>
+                <MeetingRequest
+                  userId={user?.id}
+                  onCreated={(m) => setMeetings((prev) => [m, ...prev])}
+                />
+                <div className="mt-4">
+                  {meetings.length === 0 ? (
+                    <p className="text-gray-500">No meetings yet.</p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {meetings.map((m) => (
+                        <li key={m.id} className="p-3 border rounded bg-white">
+                          <div className="font-medium">{m.title}</div>
+                          <div className="text-sm text-gray-600">{m.description}</div>
+                          {m.preferred_time && (
+                            <div className="text-xs text-gray-500">Preferred: {new Date(m.preferred_time).toISOString().replace('T',' ').slice(0,16)}</div>
+                          )}
+                          <div className="text-xs">Status: {m.status}</div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
             )}
 

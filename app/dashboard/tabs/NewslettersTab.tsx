@@ -4,7 +4,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, Mail, TrendingUp, Target, Calendar, Users } from 'lucide-react';
-import { PerformanceMetrics, Newsletter } from "../types";
+import { PerformanceMetrics, Newsletter } from "../AdminDashboard/types";
 
 interface NewslettersTabProps {
   metrics: PerformanceMetrics;

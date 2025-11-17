@@ -16,9 +16,10 @@ export interface Meeting {
   user_id: string;
   title: string;
   description: string;
-  meeting_date: string;
-  meeting_time: string;
-  duration: number;
+  preferred_time?: string; // added
+  meeting_date?: string;   // made optional
+  meeting_time?: string;   // made optional
+  duration?: number;
   status: 'pending' | 'approved' | 'rejected';
   loom_link?: string;
   admin_notes?: string;
@@ -62,6 +63,25 @@ export interface Newsletter {
   date: string;
   recipients: number;
   openRate: number | null;
+}
+
+// Added for User Dashboard
+export type DashboardSection =
+  | "overview"
+  | "topics"
+  | "currencies"
+  | "meetings"
+  | "content"
+  | "settings";
+
+export interface ContentItem {
+  id: string;
+  title: string;
+  description: string;
+  topic_id?: string;
+  currency_code?: string;
+  published_at: string;
+  content_type: string;
 }
 
 export type TabType = "overview" | "topics" | "users" | "meetings" | "newsletters" | "performance";

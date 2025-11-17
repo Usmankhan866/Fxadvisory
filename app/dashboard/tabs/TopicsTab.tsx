@@ -4,7 +4,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2, Eye, EyeOff, Users, Calendar, Target } from 'lucide-react';
-import { Topic } from "../types";
+import { Topic } from "../AdminDashboard/types";
 
 interface TopicsTabProps {
   topics: Topic[];
@@ -84,7 +84,7 @@ export default function TopicsTab({
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    <span>Created {new Date(topic.created_at).toLocaleDateString()}</span>
+                    <span>Created {new Date(topic.created_at).toISOString().slice(0,10)}</span>
                   </div>
                 </div>
               </div>

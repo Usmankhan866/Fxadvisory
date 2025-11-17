@@ -48,3 +48,10 @@ export const supabaseAdmin: SupabaseClient | null = serviceRoleKey
 // ---------------------------------------------------
 // Browser: use `supabase` for login, fetching, inserting user-specific data (enforces RLS)
 // Server: use `supabaseAdmin` for admin operations, bypass RLS (never expose key to client)
+
+let cached: SupabaseClient | null = null;
+export function getBrowserClient() {
+  if (cached) return cached;
+  cached = supabase;
+  return cached;
+}

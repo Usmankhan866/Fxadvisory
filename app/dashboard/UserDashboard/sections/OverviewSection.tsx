@@ -153,7 +153,7 @@ export default function OverviewSection({
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-xs text-gray-500 flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {new Date(item.published_at).toLocaleDateString()}
+                      {new Date(item.published_at).toISOString().slice(0,10)}
                     </span>
                     <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full capitalize">
                       {item.content_type}
@@ -176,7 +176,7 @@ export default function OverviewSection({
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-semibold text-gray-900">{meeting.title}</h4>
                   <p className="text-xs text-gray-600">
-                    {new Date(meeting.meeting_date).toLocaleDateString()} at {meeting.meeting_time}
+                    {meeting.meeting_date ? new Date(meeting.meeting_date).toISOString().slice(0,10) : '—'} at {meeting.meeting_time || '—'}
                   </p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

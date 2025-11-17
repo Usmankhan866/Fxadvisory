@@ -4,7 +4,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Video, MessageSquare, Plus } from 'lucide-react';
-import { Meeting, PerformanceMetrics, Topic, TabType } from "../types";
+import { PerformanceMetrics, Meeting, Topic, TabType } from "../AdminDashboard/types";
 
 interface OverviewTabProps {
   metrics: PerformanceMetrics;
@@ -102,7 +102,7 @@ export default function OverviewTab({
                 <p className="text-xs text-gray-600">{meeting.user?.user_metadata?.full_name}</p>
               </div>
               <span className="text-xs text-gray-500">
-                {new Date(meeting.created_at).toLocaleDateString()}
+                {new Date(meeting.created_at).toISOString().slice(0,10)}
               </span>
             </div>
           ))}

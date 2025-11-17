@@ -4,7 +4,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Video, Check, XCircle } from 'lucide-react';
-import { Meeting } from "../types";
+import { Meeting } from "../AdminDashboard/types";
 
 interface MeetingsTabProps {
   meetings: Meeting[];
@@ -58,7 +58,7 @@ export default function MeetingsTab({
                   <div>
                     <span className="text-gray-500 block mb-1">Date:</span>
                     <p className="font-medium text-gray-900">
-                      {new Date(meeting.meeting_date).toLocaleDateString()}
+                      {meeting.meeting_date ? new Date(meeting.meeting_date).toISOString().slice(0,10) : '—'}
                     </p>
                   </div>
                   <div>

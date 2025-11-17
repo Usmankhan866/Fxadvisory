@@ -11,11 +11,11 @@ import { Topic, Meeting, PerformanceMetrics, UserData, TabType } from "./types";
 // Import components
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import OverviewTab from "./tabs/OverviewTab";
-import MeetingsTab from "./tabs/MeetingsTab";
-import TopicsTab from "./tabs/TopicsTab";
-import UsersTab from "./tabs/UsersTab";
-import NewslettersTab from "./tabs/NewslettersTab";
+import OverviewTab from "../tabs/OverviewTab";
+import MeetingsTab from "../tabs/MeetingsTab";
+import TopicsTab from "../tabs/TopicsTab";
+import UsersTab from "../tabs/UsersTab";
+import NewslettersTab from "../tabs/NewslettersTab";
 import { TopicModal, MeetingModal } from "./Modals";
 
 export default function AdminDashboard() {
@@ -100,26 +100,11 @@ export default function AdminDashboard() {
     try {
       const { data, error } = await supabase
         .from('meetings')
-        .select(`
-          *,
-          user:user_id (
-            email,
-            raw_user_meta_data
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        const formattedMeetings = data.map((meeting: any) => ({
-          ...meeting,
-          user: {
-            email: meeting.user?.email || 'Unknown',
-            user_metadata: {
-              full_name: meeting.user?.raw_user_meta_data?.full_name || 'Unknown User'
-            }
-          }
-        }));
-        setMeetings(formattedMeetings as Meeting[]);
+        setMeetings(data as Meeting[]);
       }
     } catch (error) {
       console.error('Error fetching meetings:', error);
